@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% from "helpers/blog_formhelpers.html" import render_field %}
+{% block content %}
+
+<div class="col-md-8">
+    <form action="" method="post">
+        {% if form_error_message %}
+            <span style="color: red;">{{ form_error_message }}</span>
+        {% endif %}
+        {{forms.csrf_token}}
+        <div class="form-group">
+            {{ render_field(forms.username) }}
+        </div>
+        <div class="form-group">
+            {{ render_field(forms.password) }}
+        </div>
+        <input type="submit" value="Sign in">
+    </form>
+</div>
+
+
+
+
+{% endblock %}

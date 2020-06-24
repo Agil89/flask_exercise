@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% from "helpers/blog_formhelpers.html" import render_field %}
+{% block content %}
+
+<div class="col-md-8">
+    <form action="" method="post">
+        {{ forms.csrf_token}}
+        <div class="form-group">
+            {{ render_field(forms.username) }}
+        </div>
+        <div class="form-group">
+            {{ render_field(forms.email) }}
+        </div>
+        <div class="form-group">
+            {{ render_field(forms.first_name) }}
+        </div>
+        <div class="form-group">
+            {{ render_field(forms.last_name) }}
+        </div>
+        <div class="form-group">
+            {{ render_field(forms.password) }}
+        </div>
+        <input type="submit" value="Sign up">
+    </form>
+</div>
+
+
+
+
+{% endblock %}

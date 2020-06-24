@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="card mb-4">
+        <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+        <div class="card-body">
+            <h2 class="card-title">{{blogs_info.title}}</h2>
+            <p class="card-text">{{blogs_info.description}}</p>
+            <a href=/update/{{blogs_info.id}} class="btn btn-primary btn-lg">Yenile</a>
+            <a href=/delete/{{blogs_info.id}} class="btn btn-primary btn-lg">Sil</a>
+        </div>
+        <div class="card-footer text-muted">
+            {{blogs_info.created_at.strftime('%B %d, %Y')}}
+            <a href="#">{{blogs_info.owner_name}}</a>
+        </div>
+    </div>
+</body>
+</html>
