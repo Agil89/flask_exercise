@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 connection = pymysql.connect(host='localhost',
                              user ='root',
                              password='123',
-                             db='blog_project1',
+                             db='blog_project',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
@@ -58,3 +58,18 @@ def check_user(username,password):
         if check_password_hash(pwhash,password):
             finded_user=user
     return finded_user
+
+def get_user(user_id):
+    finded_user = None
+    with connection.cursor() as cursor:
+        sql = """select * from blog_project.users where users.id = %s"""
+        cursor.execute(sql,user_id)
+    finded_user = cursor.fetchone()
+    return finded_user
+
+
+def get_user_count():
+    with connection.cursor() as cursor:
+        sql = """select count(id) from users"""
+        cursor.execute(sql)
+        return cursor.fetchone()['count(id)']

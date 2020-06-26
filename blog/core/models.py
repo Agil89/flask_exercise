@@ -1,10 +1,10 @@
 import pymysql.cursors
 from datetime import datetime
-from blog.auth.models import create_user_table
+
 connection = pymysql.connect(host='localhost',
                              user ='root',
                              password='123',
-                             db='blog_project1',
+                             db='blog_project',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
@@ -14,30 +14,32 @@ def create_blog_table():
                     id int(11) unsigned AUTO_INCREMENT PRIMARY KEY,
                     title varchar(255) NOT NULL,
                     description text NOT NULL,
-                    owner_name varchar(50) NOT NULL,
                     image varchar(500),
                     created_at datetime NOT NULL,
+                    auth_id int(11) unsigned NOT NULL,
                     is_published tinyint(1) DEFAULT 1,
-                    auth_id int(11),
                     FOREIGN KEY (auth_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
                     INDEX (id,title)
                     )"""
             cursor.execute(sql)
     connection.commit()
-create_user_table()
+
 create_blog_table()
 
-def create_blog(title,description,owner_name,image,is_published=True,**kwargs):
+def create_blog(title,description,image,auth_id,is_published=True,**kwargs):
     with connection.cursor() as cursor:
-        sql = """INSERT INTO blog_project.blogs(title,description,owner_name,image,created_at,is_published)
+        sql = """INSERT INTO blog_project.blogs(title,description,image,created_at,auth_id,is_published)
         VALUES(%s,%s,%s,%s,%s,%s)"""
         created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        cursor.execute(sql,(title,description,owner_name,image,created_at,is_published))
+        cursor.execute(sql,(title,description,image,created_at,auth_id,is_published))
     connection.commit()
 
-def all_blogs():
+def all_blogs(limit_f_index=None,limit_s_index=None):
+    limit_query=''
+    if limit_f_index is not None and limit_s_index is not None:
+        limit_query=f"LIMIT {limit_f_index},{limit_s_index}"
     with connection.cursor() as cursor:
-        sql = """select * from blog_project.blogs"""
+        sql = f"""select * from blog_project.blogs {limit_query}"""
         cursor.execute(sql)
     return cursor.fetchall()
 
@@ -66,3 +68,22 @@ def delete_blog(id):
         cursor.execute(sql,id)
     connection.commit()
     return cursor.fetchone()
+
+def get_blog_user_details(blog_id):
+    with connection.cursor() as cursor:
+        sql = """select users.first_name,users.last_name from blogs
+         INNER JOIN users on users.id = blogs.auth_id where blogs.id=%s"""
+        cursor.execute(sql,blog_id)
+        return cursor.fetchone()
+
+def get_blog_count():
+    with connection.cursor() as cursor:
+        sql = """select count(id) from blogs"""
+        cursor.execute(sql)
+        return cursor.fetchone()['count(id)']
+
+def get_info():
+    with connection.cursor() as cursor:
+        sql = """select * from about_website"""
+        cursor.execute(sql)
+        return cursor.fetchone()

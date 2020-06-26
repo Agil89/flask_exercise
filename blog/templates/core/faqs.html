@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from "helpers/blog_formhelpers.html" import render_field %}
+{% block title %}Create page{% endblock %}
+{% block content %}
+
+<body>
+   
+            <div class="col-md-8">
+                {% for question in questions %}
+                    <p>{{question.username}}--{{question.email}}--{{question.subject}}--{{question.message}}</p>
+                {% endfor %}
+            </div>
+              
+    
+
+{% endblock %}

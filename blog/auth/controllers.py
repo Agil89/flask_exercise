@@ -10,7 +10,6 @@ auth = Blueprint(__name__,'auth')
 @auth.route('/register',methods=['GET','POST'])
 def register():
     forms = RegisterForm()
-    print(forms.data)
     if forms.validate_on_submit():
         create_user(**forms.data)
         flash('Succesfully registered,sign in please.')

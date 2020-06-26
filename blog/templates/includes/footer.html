@@ -1,7 +1,17 @@
- <!-- Footer -->
- <footer class="py-5 bg-dark">
+<!-- Footer -->
+<footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+    <div class="d-flex justify-content-around">
+        <div class="d-flex flex-column">
+            <span style="color: white;font-weight: bold;">Count of users:{{count_of_users}}</span>
+            <span style="color: white;font-weight: bold;">Count of blogs:{{count_of_blogs}}</span>
+        </div>
+        <div class="d-flex flex-column">
+            <span style="color: white;font-weight: bold;">Facebook:{{info_about.facebook}}</span>
+            <span style="color: white;font-weight: bold;">Email:{{info_about.email}}</span>
+            <span style="color: white;font-weight: bold;">Phone:{{info_about.phone}}</span>
+        </div>
     </div>
-    <!-- /.container -->
+</div>
+
 </footer>

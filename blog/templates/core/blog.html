@@ -13,8 +13,10 @@
         <div class="card-body">
             <h2 class="card-title">{{blogs_info.title}}</h2>
             <p class="card-text">{{blogs_info.description}}</p>
-            <a href=/update/{{blogs_info.id}} class="btn btn-primary btn-lg">Yenile</a>
-            <a href=/delete/{{blogs_info.id}} class="btn btn-primary btn-lg">Sil</a>
+            {% if session.user_id==blogs_info.auth_id %}
+                <a href=/update/{{blogs_info.id}} class="btn btn-primary btn-lg">Yenile</a>
+                <a href=/delete/{{blogs_info.id}} class="btn btn-primary btn-lg">Sil</a>
+            {% endif %}
         </div>
         <div class="card-footer text-muted">
             {{blogs_info.created_at.strftime('%B %d, %Y')}}

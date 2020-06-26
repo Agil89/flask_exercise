@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from "helpers/blog_formhelpers.html" import render_field %}
+{% block title %}About Website{% endblock %}
+{% block content %}
+
+<body>
+   
+            <div class="col-md-8">
+
+                <form action="" method='get'>
+                    <div style="align-items: center;display: flex;height: 400px;">
+                    <div class="form-group">
+                        <span>We are in facebook: {{ about_info.facebook }}</span>
+                    </div>
+                    <div class="form-group">
+                        <span>Our email address: {{ about_info.email }}</span>
+                    </div>
+                    <div class="form-group">
+                       <span>Our phone number: {{ about_info.phone }}</span>
+                    </div>
+                </div>
+                </form>
+            </div>
+              
+    
+
+{% endblock %}

@@ -11,25 +11,11 @@
                     {{ form.csrf_token}}
                     <div class="form-group">
                         {{ render_field(form.title) }}
-                        <!-- {{form.title.label}}
-                        {{form.title}} -->
-                        <!-- <label>Title</label>
-                        <input type="text" class="form-control" name="title"> -->
                     </div>
                     <div class="form-group">
                         {{ render_field(form.description) }}
-                        <!-- {{form.description.label}}
-                        {{form.description}} -->
-                        <!-- <label>Description</label>
-                        <textarea class="form-control" name="description" id="" cols="30" rows="10"></textarea> -->
                     </div>
-                    <div class="form-group">
-                        {{ render_field(form.owner_name) }}
-                        <!-- {{form.owner_name.label}}
-                        {{form.owner_name}} -->
-                        <!-- <label>Owner Name</label>
-                        <input type="text" class="form-control" name="owner_name"> -->
-                    </div>
+                    
                     <input type="submit" class="btn btn-primary" value="Yarat">
                 </form>
             </div>

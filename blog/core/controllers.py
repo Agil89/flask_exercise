@@ -1,18 +1,33 @@
 from flask import Blueprint,render_template,request,redirect,flash,session
-from blog.core.models import create_blog,all_blogs,search_blog,blog_info,update_blog,delete_blog
-from blog.core.forms import BlogForm
+from blog.core.models import create_blog,all_blogs,search_blog,blog_info,update_blog,delete_blog,get_blog_count
+from blog.core.forms import BlogForm,ContactForm
 from blog.core.utils import login_required
+from blog import Contact,db,AboutWebsite
+import math
 
 core = Blueprint(__name__,'core')
 
 @core.route('/')
 def home():
-    blogs=all_blogs()
+    page = int(request.args.get('page',1))
+    blogs=all_blogs((page-1)*2,2)
+    page_count = math.ceil(get_blog_count()/2)
+    page_range = range(1,page_count+1)
+    next_page = None
+    previous_page = None
+    if page+1 <= page_count:
+        next_page= page+1
+    if page-1 >= 0:
+        previous_page= page -1
     data = request.args.get('search_word')
     if data:
         blogs=search_blog(data)
     context = {
-        'blogs': blogs
+        'blogs': blogs,
+        'page_range':page_range,
+        'next_page':next_page,
+        'previous_page':previous_page,
+        'current_page':page,
     }
     return render_template('core/home.html',**context)
 
@@ -21,7 +36,7 @@ def home():
 def create():
     form = BlogForm()
     if form.validate_on_submit():
-        create_blog(**form.data,image='')
+        create_blog(**form.data,image='',auth_id=session.get('user_id'))
         return redirect('/')
     context= {
         'form': form
@@ -31,6 +46,7 @@ def create():
 @core.route('/blog/<int:blog_id>')
 def blog_function(blog_id):
     blogs_info=blog_info(blog_id)
+    print(blogs_info)
     context = {
         'blogs_info':blogs_info
     }
@@ -52,9 +68,40 @@ def change_blog(id):
             flash('Blog updated')
             return redirect('/')
 
-
 @core.route('/delete/<int:id>')
 def remove_blog(id):
     delete_blog(id)
     flash('Blog deleted')
     return redirect('/')
+
+@core.route('/contact',methods=['GET','POST'])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        contact_info=Contact(username=form.username.data,email=form.email.data,subject = form.subject.data,message=form.message.data)
+        db.session.add(contact_info)
+        db.session.commit()
+        flash('Your message send')
+        return redirect('/')
+    context = {
+        'form':form
+    }
+    return render_template('core/contact.html',**context)
+
+@core.route('/faqs',methods=['GET','POST'])
+def faqs():
+    questions = Contact.query.all()
+    context = {
+        'questions':questions
+    }
+    return render_template('core/faqs.html',**context)
+
+@core.route('/about',methods=['GET','POST'])
+def about():
+    about_info=AboutWebsite(facebook='flask_blog/facebook.com',email='myBlog@flask.com',phone =3333333)
+    db.session.add(about_info)
+    db.session.commit()
+    context = {
+        'about_info':about_info
+        }
+    return render_template('core/about.html',**context)
