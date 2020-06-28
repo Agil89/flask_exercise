@@ -1,17 +1,22 @@
 from flask import Blueprint,render_template,request,redirect,flash,session
-from blog.core.models import create_blog,all_blogs,search_blog,blog_info,update_blog,delete_blog,get_blog_count
+# from blog.core.models import create_blog,all_blogs,search_blog,blog_info,update_blog,delete_blog,get_blog_count
 from blog.core.forms import BlogForm,ContactForm
-from blog.core.utils import login_required
-from blog import Contact,db,AboutWebsite
+# from blog.core.utils import login_required
+from flask_login import login_required,current_user
+from blog import db,UPLOADED_FILES_DIR,MEDIA_URL
+from blog.core.models import AboutWebsite,Blog
 import math
+
+import os
+from blog.core.utils import save_file
 
 core = Blueprint(__name__,'core')
 
 @core.route('/')
 def home():
     page = int(request.args.get('page',1))
-    blogs=all_blogs((page-1)*2,2)
-    page_count = math.ceil(get_blog_count()/2)
+    blogs=Blog.query.filter_by().order_by(Blog.created_at.desc()).limit(2).offset((page-1)*2)
+    page_count = math.ceil(Blog.query.filter_by().count()/2)
     page_range = range(1,page_count+1)
     next_page = None
     previous_page = None
@@ -35,8 +40,13 @@ def home():
 @login_required
 def create():
     form = BlogForm()
-    if form.validate_on_submit():
-        create_blog(**form.data,image='',auth_id=session.get('user_id'))
+    if request.method=='POST' and form.validate_on_submit():
+        f = form.image.data
+        file_path = save_file(f)
+        blog= Blog(title=form.title.data,description=form.description.data,image=file_path,user_id=current_user.id)
+        # create_blog(**form.data,image='',auth_id=session.get('user_id'))
+        db.session.add(blog)
+        db.session.commit()
         return redirect('/')
     context= {
         'form': form

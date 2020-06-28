@@ -1,10 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,ValidationError
 from wtforms.validators import DataRequired,Length, Email
-from blog.auth.models import check_username,check_email
+# from blog.auth.models import check_username,check_email
+from blog.auth.models import User
+from blog import db
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[Length(2, 50), DataRequired()])
+    username = StringField('Username', validators=[Length(2, 40), DataRequired()])
     password = PasswordField('Password', validators=[Length(min=8, max=40), DataRequired()])
 
 class RegisterForm(FlaskForm):
@@ -15,13 +17,17 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password',validators=[Length(min=8,max=40),DataRequired()])
 
     def validate_username(self,field):
-        if check_username(field.data):
+        exists = db.session.query(db.exists().where(User.username == field.data)).scalar()
+        if exists:
             raise ValidationError('Username already taken')
         return field
     def validate_email(self,field):
-        if check_email(field.data):
+        exists = db.session.query(db.exists().where(User.email == field.data)).scalar()
+        if exists:
             raise ValidationError('Email already taken')
         return field
+
+
     def validate_password(self,field):
         cap_letter = [letter for letter in field.data if 65 <= ord(letter) <=90]
         if field.data.isdigit():
